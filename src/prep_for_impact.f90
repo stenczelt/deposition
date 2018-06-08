@@ -16,7 +16,7 @@ program prep_for_impact
   integer, allocatable :: seed(:), atom_belongs_to_cluster(:), cluster_size(:)
   logical :: add_ion = .true.
   real*8 :: padding, d, bonding_cutoff
-  logical, allocatable :: bonded(:,:), bonded2(:,:), remove_atom(:), clustered(:)
+  logical, allocatable :: bonded(:,:), remove_atom(:), clustered(:)
   logical, allocatable :: atom_visited(:)
   integer :: iostatus, nlines
   character*128 :: line, option, value
@@ -123,7 +123,7 @@ program prep_for_impact
 ! Read previous LAMMPS output file
 ! We only need to read the *last* snapshot of the trajectory. This code does not assume
 ! any particular number of snapshots, or a constant atom number, for that matter. It will
-! detect which is the last snapshots and how many atoms are contained in it, and will use
+! detect which is the last snapshot and how many atoms are contained in it, and will use
 ! that configuration for the processing.
   nlines = 0
   open(unit=10, file=output, status="old")
@@ -177,8 +177,8 @@ program prep_for_impact
 
 ! Make sure that atoms are not drifting away from the slab. I have observed this
 ! for instance with the Tersoff potential. Then two-atom clusters start filling
-! the vaccum region and mess up the simulation. What we do here is identify atoms
-! or clusters of atoms (up to 5 together) which are not connected to the rest of
+! the vacuum region and mess up the simulation. What we do here is identify atoms
+! or clusters of atoms which are not connected to the rest of
 ! the slab and we remove them from the simulation box
   write(*,*) "***************************************************|"
   write(*,*) "                                                   |"
