@@ -279,7 +279,7 @@ program prep_for_impact
   if( add_ion )then
 !   We calculate the incident ion's properties
     vel(1:2) = 0.d0
-    vel(3) = -dsqrt(2.d0*ion_energy*1.602/ion_mass/1.66)*1.d2
+    vel(3) = -dsqrt(2.d0*ion_energy*1.6021766208d0/ion_mass/1.660539040d0)*1.d2
 !   Seed random number generator
     call random_seed(size = n)
     allocate( seed(n) )
