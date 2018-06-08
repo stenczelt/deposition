@@ -81,18 +81,36 @@ program prep_for_impact
   write(*,*) "written during his employment at Aalto University in the period     |"
   write(*,*) "2017-2018. For enquiries you can contact the author by email.       |"
   write(*,*) "                                                                    |"
-  write(*,*) "This code was last modified on 06 Jun 2018                          |"
-  write(*,*) "____________________________________________________________________/"
-  write(*,*)
-  write(*,*) "You have chosen the following options:"
-  write(*,*)
-  write(*,*) "Previous LAMMPS output file: ", trim(adjustl(output))
-  write(*,*) "Input file for LAMMPS simulation: ", trim(adjustl(input))
-  write(*,*) "Incident atom energy:", ion_energy, "eV"
-  write(*,*) "Incident atom mass:", ion_mass, "amu"
-  write(*,*) "Bonded cutoff (1st NN):", bonding_cutoff, "Angst."
-  write(*,*) "Cell padding (vacuum):", padding, "Angst."
-
+  write(*,*) "This code was last modified on 08 Jun 2018                          |"
+  write(*,*) "                                                    ________________/"
+  write(*,*) "                                                   /"
+  write(*,*) "                                                   |"
+  write(*,*) "***************************************************|"
+  write(*,*) "                                                   |"
+  write(*,*) "You have chosen the following options:             |"
+  write(*,*) "                                                   |"
+  write(*,*) "*LAMMPS output file from previous simulation:      |"
+  if( len(trim(adjustl(output))) > 49 )then
+    write(*,"(A, A44, A)")  "    ", trim(adjustl(output)), "... |"
+  else
+    write(*,"(A, A47, A)")  "    ", trim(adjustl(output)), " |"
+  end if
+  write(*,*) "                                                   |"
+  write(*,*) "*Input file for subsequent LAMMPS simulation:      |"
+  if( len(trim(adjustl(input))) > 49 )then
+    write(*,"(A, A44, A)")  "    ", trim(adjustl(input)), "... |"
+  else
+    write(*,"(A, A47, A)")  "    ", trim(adjustl(input)), " |"
+  end if
+  write(*,*) "                                                   |"
+  write(*,"(A, F24.3, A)") " *Incident atom energy: ", ion_energy, " eV |"
+  write(*,*) "                                                   |"
+  write(*,"(A, F25.3, A)") " *Incident atom mass: ", ion_mass, " amu |"
+  write(*,*) "                                                   |"
+  write(*,"(A, F19.3, A)") " *Bonded cutoff (1st NN):", bonding_cutoff, " Angst. |"
+  write(*,*) "                                                   |"
+  write(*,"(A, F20.3, A)") " *Cell padding (vacuum):", padding, " Angst. |"
+  write(*,*) "                                                   |"
 
 
 ! If ion energy is zero, then we just transform the LAMMPS output to LAMMPS input
@@ -111,8 +129,14 @@ program prep_for_impact
   open(unit=10, file=output, status="old")
   read(10, "(A)", iostat=iostatus) line
   if( trim(adjustl(line)) /= "ITEM: TIMESTEP" )then
-    write(*, *) "ERROR:"
-    write(*, *) "The file used does not seem to be a native LAMMPS output trajectory file."
+    write(*,*) "***************************************************|"
+    write(*,*) "                                                   |"
+    write(*,*) "ERROR:                                             | <-- ERROR"
+    write(*,*) "                                                   |"
+    write(*,*) "The file used does not seem to be a native LAMMPS  |"
+    write(*,*) "output trajectory file.                            |"
+    write(*,*) "                                                   |"
+    write(*,*) "___________________________________________________/"
     return
   end if
   nlines = nlines + 1
@@ -132,8 +156,10 @@ program prep_for_impact
   allocate( positions(1:n_atoms, 1:3) )
   allocate( velocities(1:n_atoms, 1:3) )
   rewind(10)
-  write(*,*)
-  write(*,*) "Reading positions and velocities for", n_atoms, "atoms..."
+  write(*,*) "***************************************************|"
+  write(*,*) "                                                   |"
+  write(*,"(A, I8, A)") " Reading positions/velocities for ", n_atoms, " atoms... |"
+  write(*,*) "                                                   |"
   do i = 1, nlines - n_atoms - 4
     read(10, *)
   end do
@@ -154,9 +180,12 @@ program prep_for_impact
 ! the vaccum region and mess up the simulation. What we do here is identify atoms
 ! or clusters of atoms (up to 5 together) which are not connected to the rest of
 ! the slab and we remove them from the simulation box
-  write(*,*)
-  write(*,*) "Making sure that chunks of the growing film are not floating away..."
-  write(*,*) "(floating chunks will be removed from the simulation box)"
+  write(*,*) "***************************************************|"
+  write(*,*) "                                                   |"
+  write(*,*) "Making sure that chunks of the growing film are    |"
+  write(*,*) "not floating away... (floating chunks will be      |"
+  write(*,*) "removed from the simulation box)                   |"
+  write(*,*) "                                                   |"
   allocate( bonded(1:n_atoms, 1:n_atoms) )
   allocate( remove_atom(1:n_atoms) )
   bonded = .false.
@@ -224,8 +253,11 @@ program prep_for_impact
 
 
 
-  write(*,*)
-  write(*,*) "Randomizing XY position of incoming atom and setting up simulation box..."
+  write(*,*) "***************************************************|"
+  write(*,*) "                                                   |"
+  write(*,*) "Randomizing XY position of incoming atom and       |"
+  write(*,*) "setting up simulation box...                       |"
+  write(*,*) "                                                   |"
 ! The box should be "padding" Ansgt taller than the highest z coordinate
 ! and "padding" Angst shorter than the shortest z coordinate
   lz(2) = -1.d10
@@ -318,5 +350,13 @@ program prep_for_impact
     write(10,*) n, vel(1:3)
   end if
   close(10)
+
+
+  write(*,*) "***************************************************|"
+  write(*,*) "                                                   |"
+  write(*,*) "Program successfully executed.                     |"
+  write(*,*) "                                                   |"
+  write(*,*) "___________________________________________________/"
+
 
 end program
