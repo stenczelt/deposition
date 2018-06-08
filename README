@@ -1,0 +1,90 @@
+*****************************************************************************
+
+LICENSE AND AUTHORSHIP
+
+This is a bundle of Fortran routines that can aid in running deposition
+simulations. The programs contained herein carry out several auxiliary steps
+of pre- and post-processing of input/output files. These codes are provided
+for free, in the hope that they will be useful, but with no warranty
+whatsoever, under the Creative Commons Attribution Non-Commercial Share-alike
+license (https://creativecommons.org/licenses/by-nc-sa/3.0/). If you want to
+use the code under different terms, contact the author.
+
+These codes, except where stated otherwise, have been written and are
+copyright of:
+
+Miguel Caro (mcaroba@gmail.com)
+Department of Electrical Engineering and Automation
+Aalto University, Espoo, Finland
+
+If you use any of these codes in the preparation of publically available
+work, read and cite:
+
+"Growth Mechanism and Origin of High sp3 Content in Tetrahedral Amorphous
+Carbon"
+M.A. Caro, V.L. Deringer, J. Koskinen, T. Laurila, and G. Csányi
+Physical Review Letters 120, 166101 (2018)
+https://doi.org/10.1103/PhysRevLett.120.166101
+
+Below is a description of the different codes and how to use them.
+
+*****************************************************************************
+
+INSTALLATION
+
+ * Make sure that you have a Fortran compiler installed in your system. I
+   have reliably tested gfortran to do the job.
+
+ * Download and copy the code(s) to a directory of your choice. I will
+   assume /path/to/directory/.
+
+ * Go to the main directory and build the code:
+
+      cd /path/to/directory/
+      ./build.sh
+
+ * Add binaries to your path:
+
+      echo "PATH=/path/to/directory/bin/:$PATH" >> ~/.bashrc
+      source ~/.bashrc
+
+ * Enjoy!
+
+*****************************************************************************
+
+CODE GUIDE: "prep_for_impact"
+
+The "prep_for_impact" binary takes LAMMPS output trajectory files as input,
+it adds an impacting atom and prepares the structure for subsequent LAMMPS MD
+simulation. It needs to be executed in a directory containing 1) LAMMPS
+output trajectory file (output from a previous LAMMPS simulation) and a file
+called "prep_for_impact_options" containing keywords and input parameters for
+the processing. It looks like this:
+
+   ! Output from previous LAMMPS simulation
+   output = output_structure
+   ! Name for LAMMPS input file to be generated
+   input = input_structure
+   ! Energy of impacting atom in eV
+   ion_energy = 100.
+   ! Mass of impacting atom in amu
+   ion_mass = 12.01
+   ! The impacting atom will be place at a random XY position in the
+   ! simulation cell, above all nearest atoms below it, and initially at
+   ! "min_dist" Angstrom away from its nearest neighbor
+   min_dist = 3.
+   ! Two atoms within "bonding_cutoff" Angstrom will be assumed bonded. If
+   ! there are chunks of atoms which are not bonded to the main substrate 
+   ! (according to this number) they will be removed from the simulation box
+   bonding_cutoff = 1.9
+   ! The bottom and top edge of the simulation box will be set "padding"
+   ! Angstrom above and below the highest and lowest z coordinates of all
+   ! the atoms in the simulation cell. This number should be larger than
+   ! "min_dist" to ensure that the incoming atom is always inside the
+   ! simulation box
+   padding = 10.
+
+You can use preceding "!" and "#" for comments. To execute the code, just
+type "prep_for_impact".
+
+*****************************************************************************
