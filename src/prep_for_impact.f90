@@ -9,21 +9,21 @@ program prep_for_impact
     implicit none
 
     integer :: i, n_atoms, i_crap, j, k, n_remove, n_clusters, largest_cluster
-    character*64 :: output, c_crap, input
-    real*8 :: lx(1:2), ly(1:2), lz(1:2), ion_energy, pos(1:3), vel(1:3), dz, dxy, rand
-    real*8, allocatable :: positions(:, :), velocities(:, :)
+    integer :: iostatus, nlines
     integer :: n, clock, cluster
     integer, allocatable :: seed(:), atom_belongs_to_cluster(:), cluster_size(:)
+
     logical :: add_ion = .true.
-    real*8 :: padding, d, bonding_cutoff
-    logical, allocatable :: bonded(:, :), remove_atom(:), clustered(:)
-    logical, allocatable :: atom_visited(:)
-    integer :: iostatus, nlines
+    logical, allocatable :: bonded(:, :), remove_atom(:), clustered(:), atom_visited(:)
+
     character*128 :: line, option, value
     character*1 :: comment_line
-    real*8 :: ion_mass, min_dist
+    character*64 :: output, c_crap, input
 
-
+    real(dp) :: ion_mass, min_dist
+    real(dp) :: lx(1:2), ly(1:2), lz(1:2), ion_energy, pos(1:3), vel(1:3), dz, dxy, rand
+    real(dp) :: padding, d, bonding_cutoff
+    real(dp), allocatable :: positions(:, :), velocities(:, :)
 
 
     ! Input parameters and options
@@ -34,11 +34,11 @@ program prep_for_impact
     ! Defaults
     output = "output_structure"
     input = "input_structure"
-    ion_energy = 0.d0
-    bonding_cutoff = 1.9d0
-    padding = 4.d0
-    ion_mass = 12.01d0
-    min_dist = 3.d0
+    ion_energy = 0._dp
+    bonding_cutoff = 1.9_dp
+    padding = 4._dp
+    ion_mass = 12.01_dp
+    min_dist = 3._dp
     ! If the user gives an "options" file, we override the defaults accordingly
     open(unit = 10, file = "prep_for_impact_options", status = "old")
     iostatus = 0
@@ -254,8 +254,8 @@ program prep_for_impact
     write(*, *) "                                                   |"
     ! The box should be "padding" Ansgt taller than the highest z coordinate
     ! and "padding" Angst shorter than the shortest z coordinate
-    lz(2) = -1.d10
-    lz(1) = 1.d10
+    lz(2) = -1._dp
+    lz(1) = 1._dp
     do i = 1, n_atoms
         if(.not. remove_atom(i))then
             if(positions(i, 3) > lz(2))then

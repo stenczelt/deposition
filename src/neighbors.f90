@@ -2,6 +2,8 @@ module neighbors
 
     implicit none
 
+    integer, parameter :: dp = kind(1.d0)
+
 contains
 
     recursive subroutine find_neighbors(i, j, n_atoms, bonded, atom_visited, atom_belongs_to_cluster, cluster)
@@ -28,8 +30,8 @@ contains
 
         implicit none
 
-        real*8 :: d, l1(1:2), l2(1:2), l3(1:2)
-        real*8 :: x, y, z, lx, ly, lz, pos1(1:3), pos2(1:3)
+        real(dp) :: d, l1(1:2), l2(1:2), l3(1:2)
+        real(dp) :: x, y, z, lx, ly, lz, pos1(1:3), pos2(1:3)
 
         lx = l1(2) - l1(1)
         ly = l2(2) - l2(1)
